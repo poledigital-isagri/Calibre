@@ -7,6 +7,7 @@ import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 
 import "./style.css";
+import "primeicons/primeicons.css";
 
 const app = createApp(App);
 

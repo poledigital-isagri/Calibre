@@ -11,7 +11,10 @@
     />
 
     <div class="flex justify-between mt-2 items-center">
-      <Indicator :current="text.length" :limit="txtLimite" />
+      <div class="flex gap-4 items-center">
+        <Indicator :current="text.length" :limit="txtLimite" />
+        <span class="text-sm text-gray-600">(dont {{ nb_space }} espaces)</span>
+      </div>
       <Button label="Copier" icon="pi pi-copy" @click="copyToClipboard" />
     </div>
   </div>
@@ -29,6 +32,7 @@ const { getStoredText, saveText, getOrCreateToken } = useTextStorage();
 const token = getOrCreateToken();
 const text = ref(getStoredText(token));
 const isOverLimit = computed(() => text.value.length >= txtLimite);
+const nb_space = computed(() => (text.value.match(/\s/g) || []).length);
 
 watch(text, (val) => {
   if (val.length <= txtLimite) {
@@ -56,5 +60,6 @@ const onInput = (e: Event) => {
 <style scoped>
 .text-area {
   font-size: 1rem;
+  font-family: consolas, monospace;
 }
 </style>

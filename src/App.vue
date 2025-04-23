@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { getParam, setParam } from './utils/urlUtils';
+import { getParam } from './utils/urlUtils';
 import TextInput from './components/TextInput.vue';
 
 const txtLimit = parseInt(getParam('limite') || '200');
