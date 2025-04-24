@@ -1,3 +1,6 @@
+<!-- Composant principal de saisie de texte -->
+<!-- sdegliame@isagri.fr | 20250424091736 -->
+
 <template>
   <div>
     <Textarea
@@ -26,7 +29,8 @@ import Indicator from './Indicator.vue';
 import { useTextStorage } from '../composables/useTextStorage';
 import { getParam, setParam } from '../utils/urlUtils';
 
-const txtLimite = parseInt(getParam('limite') || '200');
+// détermination de la limite de caractères par défaut (150) ou par url (limite=xxx) sinon 150 par défaut
+const txtLimite = parseInt(getParam('limite') || '150');
 const { getStoredText, saveText, getOrCreateToken } = useTextStorage();
 
 const token = getOrCreateToken();
@@ -34,6 +38,7 @@ const text = ref(getStoredText(token));
 const isOverLimit = computed(() => text.value.length >= txtLimite);
 const nb_space = computed(() => (text.value.match(/\s/g) || []).length);
 
+// sauvegarde du texte dans le localStorage à chaque changement de texte
 watch(text, (val) => {
   if (val.length <= txtLimite) {
     saveText(token, val);
@@ -41,6 +46,7 @@ watch(text, (val) => {
   }
 });
 
+// copie du texte dans le presse-papier
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(text.value);
@@ -49,6 +55,7 @@ const copyToClipboard = async () => {
   }
 };
 
+// limitation de la saisie du texte 
 const onInput = (e: Event) => {
   const target = e.target as HTMLTextAreaElement;
   if (target.value.length > txtLimite) {

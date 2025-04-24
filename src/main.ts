@@ -16,6 +16,7 @@ app.use(PrimeVue, {
     preset: Aura
   }
 });
+
 app.component('Textarea', Textarea);
 app.component('Button', Button);
 

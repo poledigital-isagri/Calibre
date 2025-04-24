@@ -14,5 +14,5 @@
 import { getParam } from './utils/urlUtils';
 import TextInput from './components/TextInput.vue';
 
-const txtLimit = parseInt(getParam('limite') || '200');
+const txtLimit = parseInt(getParam('limite') || '150');
 </script>
