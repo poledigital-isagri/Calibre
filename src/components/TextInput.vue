@@ -15,7 +15,7 @@
         <Indicator :current="text.length" :limit="txtLimite" />
         <span class="text-sm text-gray-600">(dont {{ nb_space }} espaces)</span>
       </div>
-      <Button label="Copier" icon="pi pi-copy" @click="copyToClipboard" />
+      <Button label="Copier le texte" icon="pi pi-copy" @click="copyToClipboard" />
     </div>
   </div>
 </template>
