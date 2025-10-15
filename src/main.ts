@@ -8,6 +8,7 @@ import Button from 'primevue/button';
 import Select from 'primevue/select';
 import Tooltip from 'primevue/tooltip';
 import Dialog from 'primevue/dialog';
+import SplitButton from 'primevue/splitbutton';
 
 import "./style.css";
 import "primeicons/primeicons.css";
@@ -24,6 +25,7 @@ app.component('Textarea', Textarea);
 app.component('Button', Button);
 app.component('Select', Select);
 app.component('Dialog', Dialog);
+app.component('SplitButton', SplitButton);
 
 app.directive('tooltip', Tooltip);
 

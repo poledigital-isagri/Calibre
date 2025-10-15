@@ -3,11 +3,11 @@
 <template>
   <div class="flex items-center gap-2 h-6">
     <div class="relative w-6 h-6">
-      <svg class="w-6 h-6 transform -rotate-90">
+      <svg class="w-8 h-8 transform -rotate-90">
         <circle
           cx="12"
           cy="12"
-          r="10"
+          r="9"
           stroke-width="5"
           fill="none"
           class="stroke-gray-200"
@@ -15,7 +15,7 @@
         <circle
           cx="12"
           cy="12"
-          r="10"
+          r="9"
           stroke-width="5"
           fill="none"
           :stroke="circleColor"
