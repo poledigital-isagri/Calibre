@@ -5,6 +5,8 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
+import Select from 'primevue/select';
+import Tooltip from 'primevue/tooltip';
 
 import "./style.css";
 import "primeicons/primeicons.css";
@@ -19,5 +21,8 @@ app.use(PrimeVue, {
 
 app.component('Textarea', Textarea);
 app.component('Button', Button);
+app.component('Select', Select);
+
+app.directive('tooltip', Tooltip);
 
 app.mount('#app');

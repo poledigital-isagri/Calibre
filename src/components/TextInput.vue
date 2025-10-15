@@ -29,20 +29,41 @@ import Indicator from './Indicator.vue';
 import { useTextStorage } from '../composables/useTextStorage';
 import { getParam, setParam } from '../utils/urlUtils';
 
+// Définir les props
+const props = defineProps<{
+  currentToken?: string;
+}>();
+
+// Définir les événements émis
+const emit = defineEmits<{
+  textSaved: [token: string, content: string]
+}>();
+
 // détermination de la limite de caractères par défaut (150) ou par url (limite=xxx) sinon 150 par défaut
 const txtLimite = parseInt(getParam('limite') || '150');
 const { getStoredText, saveText, getOrCreateToken } = useTextStorage();
 
-const token = getOrCreateToken();
-const text = ref(getStoredText(token));
+// Utiliser le token fourni en prop ou créer/récupérer depuis l'URL
+const token = ref(props.currentToken || getOrCreateToken());
+const text = ref(getStoredText(token.value));
 const isOverLimit = computed(() => text.value.length >= txtLimite);
 const nb_space = computed(() => (text.value.match(/\s/g) || []).length);
+
+// Watcher pour les changements de token (quand un texte est sélectionné)
+watch(() => props.currentToken, (newToken) => {
+  if (newToken) {
+    token.value = newToken;
+    text.value = getStoredText(newToken);
+  }
+}, { immediate: true });
 
 // sauvegarde du texte dans le localStorage à chaque changement de texte
 watch(text, (val) => {
   if (val.length <= txtLimite) {
-    saveText(token, val);
-    if (val.length > 0) setParam('id', token);
+    saveText(token.value, val);
+    if (val.length > 0) setParam('id', token.value);
+    // Émettre l'événement de sauvegarde
+    emit('textSaved', token.value, val);
   }
 });
 
