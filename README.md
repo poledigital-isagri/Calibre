@@ -42,7 +42,7 @@ L'application migre automatiquement les anciennes données (format `txt_{token}`
 - **Token** : géré centralement dans le composable `useTextStorage`
 - **URL** : synchronisée avec le localStorage pour permettre le partage de liens
 
-## Améliorations récentes (2025-01-15)
+## Améliorations récentes (2025-10-15)
 * Refonte du modèle de stockage avec un seul objet JSON par texte
 * Centralisation de la gestion des tokens dans le composable
 * Clarification de la source de vérité pour la limite de caractères
