@@ -86,9 +86,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useTextStorage, type StoredText } from '../composables/useTextStorage';
-import { setParam } from '../utils/urlUtils';
+import { setParams, deleteParam } from '../utils/urlUtils';
 
-const { getAllStoredTexts, getOrCreateToken, deleteStoredText, getStoredLimit } = useTextStorage();
+const { getAllStoredTexts, getOrCreateToken, deleteStoredText, getStoredLimit, generateToken } = useTextStorage();
 
 const selectedText = ref<string>('');
 const storedTexts = ref<StoredText[]>([]);
@@ -119,8 +119,10 @@ watch(selectedText, (newToken) => {
     const limite = getStoredLimit(newToken);
 
     // Mettre à jour l'URL avec le token sélectionné et sa limite
-    setParam('id', newToken);
-    setParam('limite', limite.toString());
+    setParams({
+      id: newToken,
+      limite: limite.toString()
+    });
 
     // Émettre l'événement pour informer le parent
     emit('textSelected', newToken);
@@ -148,12 +150,10 @@ const confirmDelete = () => {
     const currentToken = getOrCreateToken();
     if (currentToken === token) {
       // Supprimer le paramètre id de l'URL
-      const url = new URL(window.location.href);
-      url.searchParams.delete('id');
-      window.history.replaceState(null, '', url.toString());
+      deleteParam('id');
 
       // Créer un nouveau token et l'émettre
-      const newToken = crypto.randomUUID();
+      const newToken = generateToken();
       emit('textSelected', newToken);
       selectedText.value = newToken;
     }

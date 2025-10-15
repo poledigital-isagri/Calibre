@@ -13,6 +13,11 @@ import SplitButton from 'primevue/splitbutton';
 import "./style.css";
 import "primeicons/primeicons.css";
 
+// Migrer les anciennes données au démarrage
+import { useTextStorage } from './composables/useTextStorage';
+const { migrateOldData } = useTextStorage();
+migrateOldData();
+
 const app = createApp(App);
 
 app.use(PrimeVue, {

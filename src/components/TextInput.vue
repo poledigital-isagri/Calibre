@@ -27,7 +27,7 @@
 import { ref, computed, watch } from 'vue';
 import Indicator from './Indicator.vue';
 import { useTextStorage } from '../composables/useTextStorage';
-import { getParam, setParam } from '../utils/urlUtils';
+import { getParam, setParams } from '../utils/urlUtils';
 
 // Définir les props
 const props = defineProps<{
@@ -41,7 +41,7 @@ const emit = defineEmits<{
 
 // détermination de la limite de caractères - reactive pour les changements d'URL
 const txtLimite = ref(parseInt(getParam('limite') || '150'));
-const { getStoredText, saveText, getOrCreateToken, getStoredLimit } = useTextStorage();
+const { getStoredText, getStoredTextData, saveText, getOrCreateToken } = useTextStorage();
 
 // Utiliser le token fourni en prop ou créer/récupérer depuis l'URL
 const token = ref(props.currentToken || getOrCreateToken());
@@ -53,11 +53,17 @@ const nb_space = computed(() => (text.value.match(/\s/g) || []).length);
 watch(() => props.currentToken, (newToken) => {
   if (newToken) {
     token.value = newToken;
-    text.value = getStoredText(newToken);
-    // Mettre à jour la limite depuis le localStorage ou l'URL
-    const storedLimit = getStoredLimit(newToken);
-    const urlLimit = parseInt(getParam('limite') || '150');
-    txtLimite.value = storedLimit !== 150 ? storedLimit : urlLimit;
+    const textData = getStoredTextData(newToken);
+
+    if (textData) {
+      // Utiliser les données du localStorage (source de vérité)
+      text.value = textData.content;
+      txtLimite.value = textData.limite;
+    } else {
+      // Nouveau texte : utiliser la limite de l'URL ou la valeur par défaut
+      text.value = '';
+      txtLimite.value = parseInt(getParam('limite') || '150');
+    }
   }
 }, { immediate: true });
 
@@ -65,7 +71,12 @@ watch(() => props.currentToken, (newToken) => {
 watch(text, (val) => {
   if (val.length <= txtLimite.value) {
     saveText(token.value, val, txtLimite.value);
-    if (val.length > 0) setParam('id', token.value);
+    if (val.length > 0) {
+      setParams({
+        id: token.value,
+        limite: txtLimite.value.toString()
+      });
+    }
     // Émettre l'événement de sauvegarde
     emit('textSaved', token.value, val);
   }

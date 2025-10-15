@@ -34,14 +34,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { getParam, setParam } from './utils/urlUtils';
+import { getParam, setParams } from './utils/urlUtils';
 import { useTextStorage } from './composables/useTextStorage';
 import TextInput from './components/TextInput.vue';
 import TextSelector from './components/TextSelector.vue';
 
 const txtLimit = ref(parseInt(getParam('limite') || '150'));
 const textSelectorRef = ref();
-const { getOrCreateToken } = useTextStorage();
+const { getOrCreateToken, generateToken } = useTextStorage();
 
 // Token actuel pour le TextInput
 const currentToken = ref(getOrCreateToken());
@@ -75,11 +75,13 @@ watch(() => getParam('limite'), (newLimit) => {
 // Créer un nouveau texte avec une limite spécifique
 const createNewText = (limite: number) => {
   // Générer un nouveau token
-  const newToken = crypto.randomUUID();
+  const newToken = generateToken();
 
   // Mettre à jour l'URL avec le nouveau token et la limite
-  setParam('id', newToken);
-  setParam('limite', limite.toString());
+  setParams({
+    id: newToken,
+    limite: limite.toString()
+  });
 
   // Mettre à jour la limite locale
   txtLimit.value = limite;

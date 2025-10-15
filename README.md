@@ -20,6 +20,36 @@ Un paramètre `id` est automatiquement ajouté dès la saise de texte à l'url l
 
 Exemple d'un url avec une limite à 300 caractères : `https://demo.fr/calibre/?limite=300`
 
+## Architecture et stockage
+
+### Stockage localStorage
+Les textes sont stockés dans le localStorage avec le format suivant :
+```json
+{
+  "content": "Le contenu du texte",
+  "limite": 150,
+  "lastModified": 1234567890
+}
+```
+
+Clé de stockage : `calibre_text_{token}`
+
+### Migration automatique
+L'application migre automatiquement les anciennes données (format `txt_{token}` et `limit_{token}`) vers le nouveau format unifié au démarrage.
+
+### Source de vérité
+- **Limite** : le localStorage est la source de vérité, avec fallback sur l'URL
+- **Token** : géré centralement dans le composable `useTextStorage`
+- **URL** : synchronisée avec le localStorage pour permettre le partage de liens
+
+## Améliorations récentes (2025-01-15)
+* Refonte du modèle de stockage avec un seul objet JSON par texte
+* Centralisation de la gestion des tokens dans le composable
+* Clarification de la source de vérité pour la limite de caractères
+* Nettoyage de l'interface `StoredText` pour refléter les données réelles
+* Encapsulation des manipulations d'URL dans `urlUtils`
+* Migration automatique des anciennes données
+
 ## Améliorations possibles
 * Ajout d'un mode "expert" pour afficher le nombre de mots
 
