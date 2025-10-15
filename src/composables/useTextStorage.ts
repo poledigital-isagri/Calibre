@@ -1,3 +1,7 @@
+// utilitaire de récupèration et d'établissement des paramètres d'url
+// sdegliame@isagri.fr | 20251015175424
+
+
 // Structure de données stockée dans le localStorage
 interface StoredTextData {
     content: string;

@@ -1,5 +1,5 @@
 <!-- Composant de sélection des textes sauvegardés -->
-<!-- sdegliame@isagri.fr | 20250115 -->
+<!-- sdegliame@isagri.fr | 20251015175438 -->
 
 <template>
   <div class="text-selector">
