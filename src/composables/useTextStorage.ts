@@ -3,6 +3,7 @@ export interface StoredText {
     content: string;
     preview: string;
     lastModified: Date;
+    limite: number;
 }
 
 export function useTextStorage() {
@@ -10,8 +11,16 @@ export function useTextStorage() {
         return localStorage.getItem(`txt_${token}`) || '';
     }
 
-    function saveText(token: string, content: string) {
+    function saveText(token: string, content: string, limite?: number) {
         localStorage.setItem(`txt_${token}`, content);
+        if (limite !== undefined) {
+            localStorage.setItem(`limit_${token}`, limite.toString());
+        }
+    }
+
+    function getStoredLimit(token: string): number {
+        const stored = localStorage.getItem(`limit_${token}`);
+        return stored ? parseInt(stored) : 150; // Default to 150 if not found
     }
 
     function getOrCreateToken(): string {
@@ -39,6 +48,9 @@ export function useTextStorage() {
                         ? content.substring(0, 50) + '...'
                         : content;
 
+                    // Get the stored limit for this token
+                    const limite = getStoredLimit(token);
+
                     // Try to get last modified date from browser storage or use current date
                     const lastModified = new Date();
 
@@ -46,7 +58,8 @@ export function useTextStorage() {
                         token,
                         content,
                         preview,
-                        lastModified
+                        lastModified,
+                        limite
                     });
                 }
             }
@@ -58,6 +71,7 @@ export function useTextStorage() {
 
     function deleteStoredText(token: string) {
         localStorage.removeItem(`txt_${token}`);
+        localStorage.removeItem(`limit_${token}`);
     }
 
     return {
@@ -65,6 +79,7 @@ export function useTextStorage() {
         saveText,
         getOrCreateToken,
         getAllStoredTexts,
-        deleteStoredText
+        deleteStoredText,
+        getStoredLimit
     };
 }

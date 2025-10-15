@@ -39,14 +39,14 @@ const emit = defineEmits<{
   textSaved: [token: string, content: string]
 }>();
 
-// détermination de la limite de caractères par défaut (150) ou par url (limite=xxx) sinon 150 par défaut
-const txtLimite = parseInt(getParam('limite') || '150');
-const { getStoredText, saveText, getOrCreateToken } = useTextStorage();
+// détermination de la limite de caractères - reactive pour les changements d'URL
+const txtLimite = ref(parseInt(getParam('limite') || '150'));
+const { getStoredText, saveText, getOrCreateToken, getStoredLimit } = useTextStorage();
 
 // Utiliser le token fourni en prop ou créer/récupérer depuis l'URL
 const token = ref(props.currentToken || getOrCreateToken());
 const text = ref(getStoredText(token.value));
-const isOverLimit = computed(() => text.value.length >= txtLimite);
+const isOverLimit = computed(() => text.value.length >= txtLimite.value);
 const nb_space = computed(() => (text.value.match(/\s/g) || []).length);
 
 // Watcher pour les changements de token (quand un texte est sélectionné)
@@ -54,13 +54,17 @@ watch(() => props.currentToken, (newToken) => {
   if (newToken) {
     token.value = newToken;
     text.value = getStoredText(newToken);
+    // Mettre à jour la limite depuis le localStorage ou l'URL
+    const storedLimit = getStoredLimit(newToken);
+    const urlLimit = parseInt(getParam('limite') || '150');
+    txtLimite.value = storedLimit !== 150 ? storedLimit : urlLimit;
   }
 }, { immediate: true });
 
 // sauvegarde du texte dans le localStorage à chaque changement de texte
 watch(text, (val) => {
-  if (val.length <= txtLimite) {
-    saveText(token.value, val);
+  if (val.length <= txtLimite.value) {
+    saveText(token.value, val, txtLimite.value);
     if (val.length > 0) setParam('id', token.value);
     // Émettre l'événement de sauvegarde
     emit('textSaved', token.value, val);
@@ -76,11 +80,11 @@ const copyToClipboard = async () => {
   }
 };
 
-// limitation de la saisie du texte 
+// limitation de la saisie du texte
 const onInput = (e: Event) => {
   const target = e.target as HTMLTextAreaElement;
-  if (target.value.length > txtLimite) {
-    target.value = target.value.slice(0, txtLimite);
+  if (target.value.length > txtLimite.value) {
+    target.value = target.value.slice(0, txtLimite.value);
   }
 };
 </script>

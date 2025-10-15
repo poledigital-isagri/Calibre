@@ -20,7 +20,7 @@
           <div class="flex flex-col flex-1 min-w-0">
             <span class="font-medium truncate">{{ slotProps.option.preview }}</span>
             <small class="text-gray-500">
-              {{ slotProps.option.content.length }} caractères
+              {{ slotProps.option.content.length }}/{{ slotProps.option.limite }} caractères
             </small>
           </div>
           <Button
@@ -43,6 +43,43 @@
     <div v-else class="text-sm text-gray-500 mt-1">
       {{ storedTexts.length }} texte(s) sauvegardé(s)
     </div>
+
+    <!-- Dialog de confirmation de suppression -->
+    <Dialog
+      v-model:visible="showDeleteDialog"
+      modal
+      header="Confirmer la suppression"
+      :style="{ width: '25rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+    >
+      <div class="flex align-items-center gap-3 mb-3">
+        <i class="pi pi-exclamation-triangle text-orange-500" style="font-size: 2rem"></i>
+        <div>
+          <p class="mb-2">Êtes-vous sûr de vouloir supprimer ce texte ?</p>
+          <p class="text-sm text-gray-600 mb-0">
+            <strong>Aperçu :</strong> {{ textToDelete?.preview }}
+          </p>
+          <p class="text-sm text-gray-600 mb-0">
+            <strong>Taille :</strong> {{ textToDelete?.content.length }}/{{ textToDelete?.limite }} caractères
+          </p>
+        </div>
+      </div>
+
+      <template #footer>
+        <Button
+          label="Annuler"
+          icon="pi pi-times"
+          @click="cancelDelete"
+          text
+        />
+        <Button
+          label="Supprimer"
+          icon="pi pi-trash"
+          @click="confirmDelete"
+          severity="danger"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -51,10 +88,14 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useTextStorage, type StoredText } from '../composables/useTextStorage';
 import { setParam } from '../utils/urlUtils';
 
-const { getAllStoredTexts, getOrCreateToken, deleteStoredText } = useTextStorage();
+const { getAllStoredTexts, getOrCreateToken, deleteStoredText, getStoredLimit } = useTextStorage();
 
 const selectedText = ref<string>('');
 const storedTexts = ref<StoredText[]>([]);
+
+// État pour le dialog de suppression
+const showDeleteDialog = ref(false);
+const textToDelete = ref<StoredText | null>(null);
 
 // Charger les textes sauvegardés
 const loadStoredTexts = () => {
@@ -74,16 +115,32 @@ const onTextSelected = () => {
 // Watcher pour détecter les changements de sélection
 watch(selectedText, (newToken) => {
   if (newToken && typeof newToken === 'string') {
-    // Mettre à jour l'URL avec le token sélectionné
+    // Récupérer la limite associée à ce token
+    const limite = getStoredLimit(newToken);
+
+    // Mettre à jour l'URL avec le token sélectionné et sa limite
     setParam('id', newToken);
+    setParam('limite', limite.toString());
+
     // Émettre l'événement pour informer le parent
     emit('textSelected', newToken);
   }
 });
 
-// Supprimer un texte
+// Supprimer un texte - afficher le dialog de confirmation
 const deleteText = (token: string) => {
-  if (confirm('Êtes-vous sûr de vouloir supprimer ce texte ?')) {
+  // Trouver le texte à supprimer pour l'afficher dans le dialog
+  const textData = storedTexts.value.find(text => text.token === token);
+  if (textData) {
+    textToDelete.value = textData;
+    showDeleteDialog.value = true;
+  }
+};
+
+// Confirmer la suppression
+const confirmDelete = () => {
+  if (textToDelete.value) {
+    const token = textToDelete.value.token;
     deleteStoredText(token);
     loadStoredTexts();
 
@@ -101,6 +158,16 @@ const deleteText = (token: string) => {
       selectedText.value = newToken;
     }
   }
+
+  // Fermer le dialog
+  showDeleteDialog.value = false;
+  textToDelete.value = null;
+};
+
+// Annuler la suppression
+const cancelDelete = () => {
+  showDeleteDialog.value = false;
+  textToDelete.value = null;
 };
 
 // Charger les textes au montage du composant

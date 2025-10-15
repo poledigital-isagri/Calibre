@@ -23,18 +23,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getParam } from './utils/urlUtils';
 import { useTextStorage } from './composables/useTextStorage';
 import TextInput from './components/TextInput.vue';
 import TextSelector from './components/TextSelector.vue';
 
-const txtLimit = parseInt(getParam('limite') || '150');
+const txtLimit = ref(parseInt(getParam('limite') || '150'));
 const textSelectorRef = ref();
 const { getOrCreateToken } = useTextStorage();
 
 // Token actuel pour le TextInput
 const currentToken = ref(getOrCreateToken());
+
+// Watcher pour les changements de limite dans l'URL
+watch(() => getParam('limite'), (newLimit) => {
+  if (newLimit) {
+    txtLimit.value = parseInt(newLimit);
+  }
+});
 
 // Gérer la sélection d'un texte depuis le sélecteur
 const onTextSelected = (token: string) => {

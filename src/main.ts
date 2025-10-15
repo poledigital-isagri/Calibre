@@ -7,6 +7,7 @@ import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Select from 'primevue/select';
 import Tooltip from 'primevue/tooltip';
+import Dialog from 'primevue/dialog';
 
 import "./style.css";
 import "primeicons/primeicons.css";
@@ -22,6 +23,7 @@ app.use(PrimeVue, {
 app.component('Textarea', Textarea);
 app.component('Button', Button);
 app.component('Select', Select);
+app.component('Dialog', Dialog);
 
 app.directive('tooltip', Tooltip);
 
