@@ -19,3 +19,9 @@ Après le build (`npm run build`) le contenu du dossier `dist` peut être déplo
 Un paramètre `id` est automatiquement ajouté dès la saise de texte à l'url lors de la sauvegarde du texte dans le localStorage afin de permettre de récupérer le texte sauvegardé.
 
 Exemple d'un url avec une limite à 300 caractères : `https://demo.fr/calibre/?limite=300`
+
+## Améliorations possibles
+* Ajout d'un mode "expert" pour afficher le nombre de mots
+
+
+
