@@ -9,6 +9,7 @@ import Select from 'primevue/select';
 import Tooltip from 'primevue/tooltip';
 import Dialog from 'primevue/dialog';
 import SplitButton from 'primevue/splitbutton';
+import ToggleSwitch from 'primevue/toggleswitch';
 
 import "./style.css";
 import "primeicons/primeicons.css";
@@ -31,6 +32,7 @@ app.component('Button', Button);
 app.component('Select', Select);
 app.component('Dialog', Dialog);
 app.component('SplitButton', SplitButton);
+app.component('ToggleSwitch', ToggleSwitch);
 
 app.directive('tooltip', Tooltip);
 
