@@ -11,7 +11,9 @@
   "dependencies": {
     "@primeuix/themes": "^1.0.3",
     "@tailwindcss/vite": "^4.1.4",
+    "@types/markdown-it": "^14.1.2",
     "@vueuse/core": "^13.1.0",
+    "markdown-it": "^14.1.0",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",

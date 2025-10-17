@@ -7,6 +7,7 @@ interface StoredTextData {
     content: string;
     limite: number;
     lastModified: number; // timestamp
+    isMarkdown?: boolean; // mode markdown activé ou non
 }
 
 // Interface pour l'affichage (avec propriétés calculées)
@@ -49,12 +50,13 @@ export function useTextStorage() {
     /**
      * Sauvegarde un texte avec sa limite dans le localStorage
      */
-    function saveText(token: string, content: string, limite: number = DEFAULT_LIMIT) {
+    function saveText(token: string, content: string, limite: number = DEFAULT_LIMIT, isMarkdown: boolean = false) {
         const key = `${STORAGE_PREFIX}${token}`;
         const data: StoredTextData = {
             content,
             limite,
-            lastModified: Date.now()
+            lastModified: Date.now(),
+            isMarkdown
         };
         localStorage.setItem(key, JSON.stringify(data));
     }
