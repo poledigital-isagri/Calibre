@@ -51,7 +51,6 @@ L'application migre automatiquement les anciennes données (format `txt_{token}`
 * Migration automatique des anciennes données
 
 ## Améliorations possibles
-* Ajout d'un mode "expert" pour afficher le nombre de mots
-
-
+* [ ] Ajout d'un mode "expert" pour afficher le nombre de mots
+* [x] Ajout du mode Markdown 2025-10-17
 
