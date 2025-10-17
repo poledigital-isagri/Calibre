@@ -98,6 +98,12 @@ const createNewText = (limite: number) => {
 // Gérer la sélection d'un texte depuis le sélecteur
 const onTextSelected = (token: string) => {
   currentToken.value = token;
+
+  // Mettre à jour la limite depuis l'URL
+  const newLimit = getParam('limite');
+  if (newLimit) {
+    txtLimit.value = parseInt(newLimit);
+  }
 };
 
 // Gérer la sauvegarde de texte pour rafraîchir la liste
